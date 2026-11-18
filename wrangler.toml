@@ -1,0 +1,30 @@
+# Cloudflare Workers deployment (the free plan is enough).
+#   1. npx wrangler login
+#   2. Edit GITHUB_REPO below
+#   3. npx wrangler secret put GITHUB_TOKEN
+#      npx wrangler secret put MASTER_KEY      (generate: npm run keygen)
+#      npx wrangler secret put UPLOAD_TOKEN    (optional: require a key to upload)
+#   4. npx wrangler deploy
+name = "share-file"
+main = "src/worker.js"
+compatibility_date = "2025-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+[build]
+command = "node scripts/build-assets.js"
+
+# Hourly cleanup of expired files.
+[triggers]
+crons = ["17 * * * *"]
+
+[vars]
+STORAGE = "github"
+GITHUB_REPO = "YOUR_GITHUB_USER/share-file-storage"
+GITHUB_BRANCH = "main"
+MAX_FILE_SIZE_MB = "20"
+DEFAULT_EXPIRY = "1d"
+MAX_EXPIRY = "30d"
+ID_LENGTH = "7"
+
+[observability]
+enabled = true

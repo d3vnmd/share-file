@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="mn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="color-scheme" content="light dark">
+  <title>ShareFile</title>
+  <link rel="icon" href="/favicon.svg?v={{v}}" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/app.css?v={{v}}">
+  <script src="/assets/app.js?v={{v}}" defer></script>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="/">
+      <img src="/favicon.svg?v={{v}}" alt="" width="28" height="28">
+      <span>ShareFile</span>
+    </a>
+    <button id="lang" class="ghost small" type="button" aria-label="Language">EN</button>
+  </header>
+
+  <main>
+    <noscript><p class="card">JavaScript is required.</p></noscript>
+
+    <!-- Upload -->
+    <section id="view-upload" class="card" hidden>
+      <div id="upload-form-wrap">
+        <h1 data-i18n="title"></h1>
+        <p class="muted" data-i18n="subtitle"></p>
+
+        <label id="drop" class="drop" tabindex="0">
+          <input id="file" type="file" hidden>
+          <svg class="drop-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-4.5 4.5M12 4l4.5 4.5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <strong data-i18n="dropTitle"></strong>
+          <span class="muted small" data-i18n="dropHint"></span>
+          <span class="muted small" id="limit"></span>
+        </label>
+
+        <form id="options" hidden novalidate>
+          <div class="file-row">
+            <svg class="file-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Zm0 0v5h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+            <div class="grow">
+              <div id="f-name" class="ellipsis strong"></div>
+              <div id="f-size" class="muted small"></div>
+            </div>
+            <button type="button" id="f-clear" class="icon-btn" aria-label="Remove">&times;</button>
+          </div>
+
+          <div class="grid">
+            <label class="field">
+              <span data-i18n="expires"></span>
+              <select id="expires"></select>
+            </label>
+            <label class="field">
+              <span data-i18n="password"></span>
+              <input id="password" type="password" autocomplete="new-password" data-i18n-ph="passwordPh">
+            </label>
+          </div>
+          <p class="hint small" data-i18n="passwordNote"></p>
+
+          <label class="check">
+            <input type="checkbox" id="burn">
+            <span data-i18n="burn"></span>
+          </label>
+
+          <label class="field" id="token-field" hidden>
+            <span data-i18n="uploadKey"></span>
+            <input id="token" type="password" autocomplete="off">
+          </label>
+
+          <button class="primary wide" id="upload-btn" type="submit" data-i18n="upload"></button>
+
+          <div class="progress" id="progress" hidden>
+            <div class="track"><div class="bar" id="progress-bar"></div></div>
+            <span class="small muted" id="progress-text"></span>
+          </div>
+          <p class="error" id="upload-error" role="alert" hidden></p>
+        </form>
+      </div>
+
+      <div id="result" hidden>
+        <div class="badge ok" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h2 class="center" data-i18n="ready"></h2>
+        <div class="link-box">
+          <input id="result-url" readonly aria-label="Link">
+          <button id="copy" class="primary" type="button" data-i18n="copy"></button>
+        </div>
+        <p class="muted small center" id="result-info"></p>
+        <div class="row center">
+          <button id="share" class="ghost" type="button" data-i18n="share" hidden></button>
+          <button id="another" class="ghost" type="button" data-i18n="another"></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-history" class="card" hidden>
+      <h2 data-i18n="myFiles"></h2>
+      <ul id="history" class="list"></ul>
+    </section>
+
+    <!-- Download -->
+    <section id="view-download" class="card" hidden>
+      <p id="dl-loading" class="center muted" data-i18n="loading"></p>
+
+      <div id="dl-info" hidden>
+        <div class="file-big">
+          <svg class="file-icon big" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Zm0 0v5h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          <div class="grow">
+            <h1 id="dl-name" class="ellipsis"></h1>
+            <p class="muted small" id="dl-meta"></p>
+          </div>
+        </div>
+        <p class="notice warn" id="dl-burn" data-i18n="burnWarn" hidden></p>
+        <form id="dl-form" novalidate>
+          <label class="field" id="dl-pass-field" hidden>
+            <span data-i18n="enterPassword"></span>
+            <input id="dl-pass" type="password" autocomplete="off">
+          </label>
+          <button class="primary wide" id="dl-btn" type="submit"></button>
+        </form>
+        <div class="progress" id="dl-progress" hidden>
+          <div class="track"><div class="bar" id="dl-progress-bar"></div></div>
+          <span class="small muted" id="dl-progress-text"></span>
+        </div>
+        <p class="error" id="dl-error" role="alert" hidden></p>
+        <p class="notice ok" id="dl-done" hidden></p>
+      </div>
+
+      <div id="dl-missing" class="center" hidden>
+        <div class="badge bad" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 8v5m0 3.5v.01M10.3 3.9 2.6 17.5A2 2 0 0 0 4.3 20.5h15.4a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h1 id="dl-missing-title" data-i18n="notFound"></h1>
+        <p class="muted" id="dl-missing-text" data-i18n="notFoundHint"></p>
+        <a class="button ghost" href="/" data-i18n="home"></a>
+      </div>
+    </section>
+
+    <footer class="foot muted small" data-i18n="footer"></footer>
+  </main>
+</body>
+</html>
