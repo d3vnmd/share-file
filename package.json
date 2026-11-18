@@ -1,0 +1,21 @@
+{
+  "name": "share-file",
+  "version": "1.0.0",
+  "description": "Secure, minimal file sharing with short random links. Files are encrypted and stored in a GitHub repository.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.12"
+  },
+  "scripts": {
+    "build": "node scripts/build-assets.js",
+    "prestart": "npm run build",
+    "start": "node src/server.js",
+    "dev": "node scripts/build-assets.js && node --watch src/server.js",
+    "pretest": "npm run build",
+    "test": "node --test test/app.test.js test/github-storage.test.js",
+    "keygen": "node -e \"console.log(require('node:crypto').randomBytes(32).toString('base64url'))\"",
+    "deploy:cf": "npx wrangler deploy"
+  }
+}
